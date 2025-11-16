@@ -1,0 +1,23 @@
+# Virtual environment
+venv/
+.venv/
+env/
+ENV/
+
+# macOS system files
+.DS_Store
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Raw audio test files
+*.wav
+
+# Model checkpoints too large?
+# (Your h5 file is fine)
+*.ckpt
+
+# IDE settings
+.vscode/
+.idea/
