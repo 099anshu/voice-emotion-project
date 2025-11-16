@@ -13,9 +13,9 @@ The third number tells the emotion:
 
 #steps to clone
 
-git clone https://github.com/<your-username>/voice-emotion-project.git
-cd voice-emotion-project
-python3 -m venv venv
-source venv/bin/activate   # Mac
-pip install -r requirements.txt
-python app.py
+-git clone https://github.com/<your-username>/voice-emotion-project.git
+-cd voice-emotion-project
+-python3 -m venv venv
+-source venv/bin/activate   # Mac
+-pip install -r requirements.txt
+-python app.py
