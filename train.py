@@ -1,35 +1,80 @@
-from utils.dataset_loader import load_dataset
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
-import numpy as np
 import os
+import numpy as np
+import tensorflow as tf
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras import regularizers
+from utils.dataset_loader import load_dataset
+from utils.audio_preprocessing import augment_mfcc
 
-print("Loading dataset...")
-X, y = load_dataset("data")
+# -------------------------
+# 1. LOAD DATASET
+# -------------------------
+print("📥 Loading dataset...")
+X, y = load_dataset("data")  # (samples, time_steps, n_mfcc)
 
-print("Normalizing...")
-scaler = StandardScaler()
-X = scaler.fit_transform(X)
+# Data augmentation
+X_aug = np.array([augment_mfcc(x) for x in X])
+X = np.concatenate([X, X_aug])
+y = np.concatenate([y, y])
 
-print("Splitting...")
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+# -------------------------
+# 2. TRAIN/TEST SPLIT
+# -------------------------
+print("✂️ Splitting dataset...")
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, shuffle=True, random_state=42
+)
 
-print("Building model...")
-model = Sequential([
-    Dense(128, activation="relu", input_shape=(40,)),
-    Dense(64, activation="relu"),
-    Dense(6, activation="softmax")
+# -------------------------
+# 3. RESHAPE FOR LSTM
+# -------------------------
+# LSTM expects (samples, timesteps, features)
+X_train = X_train.reshape((X_train.shape[0], X_train.shape[1], X_train.shape[2]))
+X_test  = X_test.reshape((X_test.shape[0], X_test.shape[1], X_test.shape[2]))
+
+# -------------------------
+# 4. BUILD LSTM MODEL
+# -------------------------
+print("🏗️ Building LSTM model...")
+model = tf.keras.Sequential([
+    tf.keras.layers.LSTM(128, return_sequences=True, input_shape=(X_train.shape[1], X_train.shape[2])),
+    tf.keras.layers.Dropout(0.4),
+    tf.keras.layers.LSTM(64),
+    tf.keras.layers.Dropout(0.4),
+    tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.Dense(64, activation='relu', kernel_regularizer=regularizers.l2(0.001)),
+    tf.keras.layers.Dropout(0.3),
+    tf.keras.layers.Dense(6, activation='softmax')
 ])
 
-model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
+model.compile(
+    optimizer=tf.keras.optimizers.Adam(0.0003),
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
+)
 
-print("Training...")
-model.fit(X_train, y_train, epochs=25)
+model.summary()
 
-print("Saving...")
+# -------------------------
+# 5. TRAIN
+# -------------------------
+print("🏃 Training model...")
+early_stop = EarlyStopping(monitor='val_loss', patience=15, restore_best_weights=True)
+history = model.fit(
+    X_train, y_train,
+    validation_data=(X_test, y_test),
+    epochs=50,
+    batch_size=32,
+    callbacks=[early_stop],
+    verbose=1
+)
+
+# -------------------------
+# 6. SAVE MODEL
+# -------------------------
+print("💾 Saving model...")
 os.makedirs("models", exist_ok=True)
-model.save("models/emotion_model.h5")
+model.save("models/lstm_emotion_model.keras")
 
-print("Done!")
+print("✅ Training complete!")

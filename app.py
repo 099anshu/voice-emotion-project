@@ -1,45 +1,43 @@
 import sounddevice as sd
 from scipy.io.wavfile import write
-import librosa
 import numpy as np
 import tensorflow as tf
 from utils.audio_preprocessing import extract_features
-import speech_recognition as sr
 
-MODEL = tf.keras.models.load_model("models/emotion_model.h5")
-EMOTIONS = ["neutral", "happy", "sad", "angry", "fear", "surprise"]
+# -------------------------
+# LOAD MODEL
+# -------------------------
+model = tf.keras.models.load_model("models/lstm_emotion_model.keras")
+idx_to_emotion = {0:"angry", 1:"happy", 2:"sad", 3:"fear", 4:"neutral", 5:"surprise"}
 
-def record_audio(duration=5, sr=22050):
+# -------------------------
+# RECORD AUDIO
+# -------------------------
+def record_audio(filename="record.wav", duration=3, fs=22050):
     print("🎤 Recording...")
-    audio = sd.rec(int(duration * sr), samplerate=sr, channels=1, dtype='int16')
+    recording = sd.rec(int(duration * fs), samplerate=fs, channels=1)
     sd.wait()
+    # Convert float32 to int16 for WAV format
+    recording_int16 = np.int16(recording * 32767)
+    write(filename, fs, recording_int16)
+    print(f"Saved as {filename}")
 
-    # Save PCM WAV (Google Speech Recognition requires this)
-    write("record.wav", sr, audio)
-    print("Saved as record.wav (16-bit PCM)")
+# -------------------------
+# PREDICT EMOTION
+# -------------------------
+def predict_emotion(filename="record.wav"):
+    features = extract_features(filename)  # shape: (time_steps, n_mfcc)
+    features = features.reshape(1, features.shape[0], features.shape[1])
+    prediction = model.predict(features)
+    emotion = idx_to_emotion[np.argmax(prediction)]
+    print(f"Predicted Emotion: {emotion}")
+    return emotion
 
-def transcribe_audio(path):
-    r = sr.Recognizer()
-    with sr.AudioFile(path) as source:
-        audio = r.record(source)
-    try:
-        return r.recognize_google(audio)
-    except:
-        return "Could not understand audio"
-
+# -------------------------
+# MAIN LOOP
+# -------------------------
 while True:
-    input("Press Enter to record...")   # waits for user input
-    record_audio()                      # records audio → saves record.wav
-
-    # 1. Speech-to-text
-    text = transcribe_audio("record.wav")
-    print("You said:", text)
-
-    # 2. Extract ML features
-    features = extract_features("record.wav")
-
-    # 3. Predict emotion
-    prediction = MODEL.predict(np.array([features]))[0]
-    emotion = EMOTIONS[np.argmax(prediction)]
-
-    print("\nPredicted Emotion:", emotion)
+    input("Press Enter to record...")
+    record_audio()
+    predicted_emotion = predict_emotion()
+    print("-" * 40)
