@@ -67,7 +67,13 @@ AudioWAV/
 *.flac
 *.aac
 *.wma
+*.ogg
 recordings/
+
+# Web UI uploads and user data
+static/uploads/
+uploads/
+recording_history.json
 
 # Model Files (exclude large files >25MB for GitHub)
 models/*.h5
@@ -129,3 +135,14 @@ raw_data/
 # OS generated files
 .directory
 .Trash-*
+.DS_Store
+
+# Web development temporary files
+*.tmp
+*.bak
+node_modules/
+npm-debug.log*
+
+# Flask session files
+flask_session/
+instance/

@@ -8,3 +8,8 @@ scipy
 matplotlib
 audiomentations
 speechrecognition
+pyaudio
+flask
+flask-cors
+soundfile
+werkzeug

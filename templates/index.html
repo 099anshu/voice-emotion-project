@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎤 Voice Emotion Recognition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="desktop-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="title">
+                    <span class="emoji">🎭</span>
+                    Voice Emotion Recognition
+                </h1>
+                <p class="subtitle">Discover the emotions hidden in your voice</p>
+            </div>
+        </header>
+
+        <!-- Main Content Area - Horizontal Layout -->
+        <div class="main-content-wrapper">
+            <!-- Left Side - Input Section -->
+            <div class="left-panel">
+                <div class="main-card">
+                    <!-- Recording Section (Top) -->
+                    <div class="recording-section">
+                        <h2 class="section-title">
+                            <span class="section-icon">🎙️</span>
+                            Start Recording
+                        </h2>
+                        <button class="record-btn" id="recordBtn">
+                            <span class="record-icon">🎙️</span>
+                            <span class="record-text">Start Recording</span>
+                        </button>
+                        <div class="recording-status" id="recordingStatus"></div>
+                    </div>
+                    
+                    <!-- Upload Section (Bottom) -->
+                    <div class="upload-section">
+                        <h2 class="section-title">
+                            <span class="section-icon">📁</span>
+                            Drop Your Audio File
+                        </h2>
+                        <div class="upload-area" id="uploadArea">
+                            <div class="upload-content">
+                                <div class="upload-icon">🎤</div>
+                                <p>Drop your audio file here</p>
+                                <p class="upload-hint">or click to browse</p>
+                                <input type="file" id="audioInput" accept="audio/*" hidden>
+                                <button class="browse-btn" onclick="document.getElementById('audioInput').click()">
+                                    Choose File
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Audio Player -->
+                    <div class="audio-player-section" id="audioPlayerSection" style="display: none;">
+                        <div class="audio-wrapper">
+                            <div class="audio-info">
+                                <span class="audio-icon">🎵</span>
+                                <span class="audio-filename" id="audioFilename">Your audio</span>
+                            </div>
+                            <audio id="audioPlayer" controls>
+                                Your browser does not support the audio element.
+                            </audio>
+                            <button class="replay-btn" id="replayBtn">
+                                <span>🔄</span> Replay
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Loading Spinner -->
+                    <div class="loading" id="loading" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Analyzing your voice...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side - Results & History -->
+            <div class="right-panel">
+                <!-- Current Results -->
+                <div class="results-card" id="resultsCard" style="display: none;">
+                    <h2 class="section-title">
+                        <span class="section-icon">📊</span>
+                        Analysis Results
+                    </h2>
+
+                    <!-- Transcription -->
+                    <div class="transcription-card">
+                        <div class="card-header">
+                            <span class="card-icon">📝</span>
+                            <h3>Transcription</h3>
+                        </div>
+                        <p class="transcription-text" id="transcriptionText"></p>
+                    </div>
+
+                    <!-- Main Emotion Result -->
+                    <div class="emotion-result-card">
+                        <div class="emotion-display">
+                            <div class="emotion-emoji" id="emotionEmoji">😊</div>
+                            <div class="emotion-info">
+                                <h2 class="emotion-name" id="emotionName">Happy</h2>
+                                <div class="confidence-bar-container">
+                                    <div class="confidence-label">
+                                        <span>Confidence</span>
+                                        <span class="confidence-percentage" id="confidencePercentage">85%</span>
+                                    </div>
+                                    <div class="confidence-bar">
+                                        <div class="confidence-fill" id="confidenceFill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- All Emotions Breakdown -->
+                    <div class="emotions-breakdown">
+                        <div class="card-header">
+                            <span class="card-icon">📊</span>
+                            <h3>All Emotions</h3>
+                        </div>
+                        <div class="emotions-grid" id="emotionsGrid"></div>
+                    </div>
+                </div>
+
+                <!-- History Section -->
+                <div class="history-card">
+                    <div class="history-header">
+                        <h2 class="section-title">
+                            <span class="section-icon">📜</span>
+                            Recording History
+                        </h2>
+                        <button class="refresh-btn" id="refreshHistory">
+                            <span>🔄</span> Refresh
+                        </button>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <p class="history-empty">No recordings yet. Start recording or upload a file!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+           
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
