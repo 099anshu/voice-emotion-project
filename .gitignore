@@ -1,23 +1,131 @@
-# Virtual environment
+# ===========================================
+# Python Voice Emotion Recognition Project
+# ===========================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
 venv/
 .venv/
 env/
 ENV/
+env.bak/
+venv.bak/
 
-# macOS system files
-.DS_Store
-
-# Python cache
-__pycache__/
-*.pyc
-
-# Raw audio test files
-*.wav
-
-# Model checkpoints too large?
-# (Your h5 file is fine)
-*.ckpt
-
-# IDE settings
-.vscode/
+# PyCharm & VS Code
 .idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Audio Data Files (too large for GitHub)
+data/
+Audio_Speech_Actors_01-24/
+AudioWAV/
+*.wav
+*.mp3
+*.m4a
+*.flac
+*.aac
+*.wma
+recordings/
+
+# Model Files (exclude large files >25MB for GitHub)
+models/*.h5
+models/*.keras
+models/*.ckpt*
+models/*.pb
+models/*.tflite
+models/checkpoints/
+models/tensorboard_logs/
+
+# Keep essential small files
+!models/feature_scaler.pkl
+!models/confusion_matrix.png
+!models/training_history.png
+!models/README.md
+
+# Training outputs
+*.log
+logs/
+tensorboard_logs/
+wandb/
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Documentation builds
+docs/_build/
+site/
+
+# Large datasets and archives
+*.zip
+*.tar.gz
+*.rar
+*.7z
+dataset/
+datasets/
+raw_data/
+
+# OS generated files
+.directory
+.Trash-*
